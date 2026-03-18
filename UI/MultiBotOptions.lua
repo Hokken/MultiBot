@@ -137,9 +137,9 @@ function MultiBot.BuildOptionsPanel()
       end
     end)
 
-    -- Replacer le dropdown de Strata SOUS la checkbox
+    -- Replacer le dropdown de Strata SOUS la silent-whispers checkbox
     strataDropDown:ClearAllPoints()
-    strataDropDown:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", -14, -18)
+    strataDropDown:SetPoint("TOPLEFT", chkSilentWhispers, "BOTTOMLEFT", -14, -18)
 
     local strataLabel = self:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     strataLabel:SetPoint("BOTTOMLEFT", strataDropDown, "TOPLEFT", 16, 3)
@@ -153,6 +153,22 @@ function MultiBot.BuildOptionsPanel()
 
     -- Conserver la référence
     panel.chkMinimapHide = chkMinimapHide
+
+    --------------------------------------------------------------------
+    -- Silent whispers: hide bot commands from chat
+    --------------------------------------------------------------------
+    local chkSilentWhispers = CreateFrame("CheckButton", "MultiBot_SilentWhispersCheck",
+      self, "InterfaceOptionsCheckButtonTemplate")
+    chkSilentWhispers:SetPoint("TOPLEFT", chkMinimapHide, "BOTTOMLEFT", 0, -10)
+    _G[chkSilentWhispers:GetName().."Text"]:SetText("Silent whispers (hide bot commands from chat)")
+    chkSilentWhispers.tooltipText = "When enabled, whisper commands sent to bots will not appear in your chat window. Commands are still delivered to bots normally."
+
+    chkSilentWhispers:SetChecked(MultiBot.GetSilentWhispers())
+    chkSilentWhispers:SetScript("OnClick", function(btn)
+      MultiBot.SetSilentWhispers(btn:GetChecked() and true or false)
+    end)
+
+    panel.chkSilentWhispers = chkSilentWhispers
 
     local current = (MultiBotGlobalSave and MultiBotGlobalSave["Strata.Level"]) or "HIGH"
     local strataLevels = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" }

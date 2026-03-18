@@ -35,6 +35,11 @@ function MultiBot.Config_Ensure()
   if type(MultiBotDB.throttle.burst) ~= "number" or MultiBotDB.throttle.burst <= 0 then
     MultiBotDB.throttle.burst = THROTTLE_DEFAULTS.burst
   end
+
+  -- Silent whispers: default ON (suppress bot commands from appearing in chat)
+  if MultiBotDB.silentWhispers == nil then
+    MultiBotDB.silentWhispers = true
+  end
 end
 
 -- Recopie les valeurs sauvegardées vers les timers runtime

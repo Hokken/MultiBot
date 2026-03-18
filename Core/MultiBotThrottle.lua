@@ -60,4 +60,34 @@ function MultiBot.Throttle_Init()
   if DEFAULT_CHAT_FRAME then
     DEFAULT_CHAT_FRAME:AddMessage(string.format(MultiBot.tips.sliders.throttleinstalled .. " (%.0f msg/s, rafale %d)", RATE_PER_SEC, BURST))
   end
+
+  -- Apply saved silent-whispers setting after throttle is ready
+  if MultiBot.GetSilentWhispers() then
+    MultiBot.SetSilentWhispers(true)
+  end
+end
+
+-- Silent whispers: suppress outgoing bot commands from appearing in chat.
+-- Whispers are still sent to bots; they just won't clutter your chat window.
+local _silentWhisperFilter = function() return true end
+local _silentWhisperActive = false
+
+function MultiBot.SetSilentWhispers(enable)
+  if enable and not _silentWhisperActive then
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", _silentWhisperFilter)
+    _silentWhisperActive = true
+  elseif not enable and _silentWhisperActive then
+    ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", _silentWhisperFilter)
+    _silentWhisperActive = false
+  end
+  if MultiBotDB then
+    MultiBotDB.silentWhispers = enable
+  end
+end
+
+function MultiBot.GetSilentWhispers()
+  if MultiBotDB and MultiBotDB.silentWhispers ~= nil then
+    return MultiBotDB.silentWhispers
+  end
+  return true  -- default on
 end
